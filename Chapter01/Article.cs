@@ -30,11 +30,11 @@ public class Article
 
         await db.HashSetAsync(articleKey, new HashEntry[]
         {
-        new("poster",user),
-        new(nameof(title),title),
-        new(nameof(link),link),
-        new("time",now),
-        new("votes",1)
+            new("poster",user),
+            new(nameof(title),title),
+            new(nameof(link),link),
+            new("time",now),
+            new("votes",1)
         });
 
         await db.SortedSetAddAsync("score:", articleKey, now + Constant.VoteScore);
