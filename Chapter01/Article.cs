@@ -18,7 +18,7 @@ public class Article
         }
     }
 
-    public async Task PostArticleAsync(IDatabase db, string user, string title, string link)
+    public async Task<long> PostArticleAsync(IDatabase db, string user, string title, string link)
     {
         var articleId = await db.StringIncrementAsync("article:");
         var votedKey = "voted:" + articleId;
@@ -39,9 +39,10 @@ public class Article
 
         await db.SortedSetAddAsync("score:", articleKey, now + Constant.VoteScore);
         await db.SortedSetAddAsync("time:", articleKey, now);
+        return articleId;
     }
 
-    public async Task<List<Dictionary<RedisValue, RedisValue>>> GetArticleAsync(IDatabase db, int page, string order = "order:")
+    public async Task<List<Dictionary<RedisValue, RedisValue>>> GetArticleAsync(IDatabase db, int page, string order = "score:")
     {
         var start = (page - 1) * Constant.ArticlePerPage;
         var end = start + Constant.ArticlePerPage - 1;
